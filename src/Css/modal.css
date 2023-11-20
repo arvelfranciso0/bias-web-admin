@@ -1,0 +1,53 @@
+.modal-container {
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  z-index: 1;
+  height: 100vh;
+  background-color: var(--transaper-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.modal-content {
+  width: 100%;
+  height: 100vh;
+  background-color: var(--backgound-color);
+  overflow: hidden;
+  overflow-y: scroll;
+}
+#close-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+.modal-details,
+.personal-credentials,
+.business-credentials {
+  width: 100%;
+}
+.business-credentials {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+}
+#crendentials-id {
+  width: 40%;
+  height: 40vh;
+}
+.pdf-boxs {
+  margin-top: 40px;
+}
+.btn-appove-decline {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
