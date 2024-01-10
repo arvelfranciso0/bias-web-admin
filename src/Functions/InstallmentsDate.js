@@ -23,5 +23,7 @@ export function UpdateInstallments(todayDate, installments) {
     maxdate: `${listEndDate[index].toDateString()}`,
   }));
 
-  return updateReturnsWithDate;
+  const endDate = listEndDate[listEndDate.length - 1];
+
+  return { updateReturnsWithDate, endDate, startDate };
 }

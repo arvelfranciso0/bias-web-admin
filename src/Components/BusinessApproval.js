@@ -26,13 +26,22 @@ function BusinessApproval(props) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3006/admin/listofBusinessApproval")
+      .get(`${process.env.REACT_APP_NETWORK_ADD}/admin/listofBusinessApproval`)
       .then((res) => {
         if (res.data.status) {
           setlistofBusinessApproval(res.data.result);
           console.log(res.data.result);
         } else {
           alert(res.data.message);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          navigate("/server-error");
+        } else if (error.request) {
+          navigate("/error");
+        } else {
+          navigate("/somethingwrong");
         }
       });
   }, []);

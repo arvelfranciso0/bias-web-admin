@@ -11,11 +11,11 @@ function CredentialsPDF({ pdfLInk, title }) {
     return (
       <div className="pdf-contianer">
         <div className="pdf-detials">
-          <div className="title-box">
+          <div className="title-box ps-5 text-light p-2">
             <h3 id="pdf-title">{title}</h3>
           </div>
           <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-            <div className="pdf-view">
+            <div className="pdf-view ">
               <Viewer
                 fileUrl={pdfLInk}
                 plugins={[defaultLayoutPluginInstance]}

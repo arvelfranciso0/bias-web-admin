@@ -1,20 +1,26 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import { Toast, ToastContainer, Stack, Button, Modal } from "react-bootstrap";
 function ApproveInvestment(props) {
+  const navigate = useNavigate();
   const [userInvestment, setUserInvestment] = useState([]);
   const location = useLocation();
   const searchId = new URLSearchParams(location.search);
   const invst_id = searchId.get("id");
   const user_id = searchId.get("user_id");
-
+  const [alertType, setalertType] = useState("");
+  const [alertMsg, setAlertMsg] = useState("");
+  const [alertStatus, setalertStatus] = useState(false);
   useEffect(() => {
     axios
-      .post("http://localhost:3006/admin/displayuserInvestment", {
-        invst_id: invst_id,
-        user_id: user_id,
-      })
+      .post(
+        `${process.env.REACT_APP_NETWORK_ADD}/admin/displayuserInvestment`,
+        {
+          invst_id: invst_id,
+          user_id: user_id,
+        }
+      )
       .then((res) => {
         if (res.data.status) {
           setUserInvestment(res.data.result);
@@ -24,13 +30,19 @@ function ApproveInvestment(props) {
         }
       })
       .catch((error) => {
-        alert(error.message);
+        if (error.response) {
+          navigate("/server-error");
+        } else if (error.request) {
+          navigate("/error");
+        } else {
+          navigate("/somethingwrong");
+        }
       });
   }, [invst_id, user_id]);
 
   const handleApproveInvestment = (businessName) => {
     axios
-      .post("http://localhost:3006/admin/approvedInvestment", {
+      .post(`${process.env.REACT_APP_NETWORK_ADD}/admin/approvedInvestment`, {
         invst_id: invst_id,
         invst_status: "approved",
         invst_update_type: "approval",
@@ -41,17 +53,34 @@ function ApproveInvestment(props) {
       })
       .then((res) => {
         if (res.data.status) {
-          alert(res.data.message);
+          setalertStatus(true);
+          setalertType("success");
+          setAlertMsg(res.data.message);
+          window.location.reload();
         } else {
-          alert(res.data.message);
+          setalertStatus(true);
+          setalertType("danger");
+          setAlertMsg(res.data.message);
         }
       })
-      .catch((error) => {
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
   return (
     <div class="container rounded bg-white mb-5">
+      <ToastContainer position="top-center" className="p-3">
+        <Toast
+          className="d-inline-block m-1"
+          bg={alertType}
+          show={alertStatus}
+          delay={2000}
+          onClose={() => {
+            setalertStatus(false);
+          }}
+          autohide
+        >
+          <Toast.Body className="primary text-light">{alertMsg}</Toast.Body>
+        </Toast>
+      </ToastContainer>
       {userInvestment.map((item, index) => (
         <div class="row" key={index}>
           <div class="col-md-3 border-right">
@@ -117,76 +146,20 @@ function ApproveInvestment(props) {
                     value={`₱ ${item.invst_returned_amt}`}
                   />
                 </div>
-                {/* <div class="col-md-12">
-                <label class="labels">Address Line 2</label>
-                <input
-                readOnly
-                  type="text"
-                  class="form-control"
-                  placeholder="enter address line 2"
-                  value=""
-                />
               </div>
-              <div class="col-md-12">
-                <label class="labels">Postcode</label>
-                <input
-                readOnly
-                  type="text"
-                  class="form-control"
-                  placeholder="enter address line 2"
-                  value=""
-                />
-              </div>
-              <div class="col-md-12">
-                <label class="labels">State</label>
-                <input
-                readOnly
-                  type="text"
-                  class="form-control"
-                  placeholder="enter address line 2"
-                  value=""
-                />
-              </div>
-              <div class="col-md-12">
-                <label class="labels">Area</label>
-                <input
-                readOnly
-                  type="text"
-                  class="form-control"
-                  placeholder="enter address line 2"
-                  value=""
-                />
-              </div>
-              <div class="col-md-12">
-                <label class="labels">Email ID</label>
-                <input
-                readOnly
-                  type="text"
-                  class="form-control"
-                  placeholder="enter email id"
-                  value=""
-                />
-              </div>
-              <div class="col-md-12">
-                <label class="labels">Education</label>
-                <input
-                readOnly
-                  type="text"
-                  class="form-control"
-                  placeholder="education"
-                  value=""
-                />
-              </div> */}
-              </div>
-              <div class="mt-5 text-center">
-                <button
-                  class="btn btn-primary profile-button"
-                  type="button"
-                  onClick={() => handleApproveInvestment(item.buss_name)}
-                >
-                  Approved Investment
-                </button>
-              </div>
+              {item.invst_status === "request" ? (
+                <div class="mt-5 text-center">
+                  <button
+                    class="btn btn-primary profile-button"
+                    type="button"
+                    onClick={() => handleApproveInvestment(item.buss_name)}
+                  >
+                    Approved Investment
+                  </button>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           </div>
           <div class="col-md-4">

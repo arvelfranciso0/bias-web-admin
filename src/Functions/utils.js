@@ -32,8 +32,11 @@ export function calculateTotalAccumalatedAmount(installment) {
     (sum, item) => sum + parseFloat(item.invest_amount),
     0
   );
-
-  return accumalted;
+  if (accumalted) {
+    return accumalted;
+  } else {
+    return 0;
+  }
 }
 
 export function checkUseFundsCompletion(filterUseFunds) {

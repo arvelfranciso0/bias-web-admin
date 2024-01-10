@@ -11,14 +11,25 @@ function UserApproval(props) {
     navigate(`u/${id}`);
   };
   useEffect(() => {
-    axios.get("http://localhost:3006/admin/userApproval").then((res) => {
-      if (res.data.status) {
-        setUser(res.data.result);
-        console.log(res.data.result);
-      } else {
-        alert(res.data.message);
-      }
-    });
+    axios
+      .get("http://localhost:3006/admin/userApproval")
+      .then((res) => {
+        if (res.data.status) {
+          setUser(res.data.result);
+          console.log(res.data.result);
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          navigate("/server-error");
+        } else if (error.request) {
+          navigate("/error");
+        } else {
+          navigate("/somethingwrong");
+        }
+      });
   }, []);
 
   return (
